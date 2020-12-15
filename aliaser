@@ -1,0 +1,134 @@
+alias_file=$(realpath ~/.aliases)
+
+function print_add_usage() {
+  echo "usage: aliaser add <alias> <command>"
+  echo "      The alias name must not contain any spaces"
+  echo "      If command contains spaces, it must be wrapped in quotes"
+}
+
+function print_remove_usage() {
+  echo "usage: aliaser rm <alias>"
+  echo "      The alias name must not contain any spaces"
+}
+
+function print_help() {
+  echo "CLI tool to manage aliases for bash and zsh"
+  echo
+  echo "usage: aliaser <operation> [alias] [command]"
+  echo
+  echo "operations:"
+  echo "      ls"
+  echo "            Lists all aliases saved in the aliases file"
+  echo 
+  echo "      add <alias> <command>"
+  echo "            Creates/replaces an alias for the specified command in the aliases file"
+  echo "            The alias name must not contain any spaces"
+  echo "            If command contains spaces, it must be wrapped in quotes"
+  echo
+  echo "      rm <alias>"
+  echo "            Removes the alias permanently from the aliases file"
+  echo "            The alias name must not contain any spaces"
+  echo
+  echo "      help"
+  echo "            Prints the help display"
+  echo
+  echo "Visit https://github.com/bhayatus/aliaser for details on setup"
+}
+
+function list_aliases() {
+  count=`cat $alias_file | wc -l`
+  if [[ count -eq 0 ]] ; then
+    echo "No aliases found in $alias_file"
+  else
+    cat $alias_file | while read alias_line;
+    do
+      echo "$alias_line"
+    done
+  fi
+}
+
+function add_alias() {
+  count=`grep -o "^alias $alias" $alias_file | wc -l`
+  if [[ count -eq 1 ]]; then
+    echo "Alias '$alias' already exists, replace? (y to continue)"
+    read response
+    if [[ "$response" -ne "y" ]]; then
+      return
+    else
+      sed -i.bak "s/^alias $alias.*$/alias $alias='$command'/g" $alias_file
+      rm "$alias_file.bak"
+    fi
+  else
+    echo "alias $alias='$command'" >> $alias_file
+  fi
+
+  source $alias_file
+  echo "Added alias '$alias'"
+}
+
+function remove_alias() {
+  count=`grep -o "^alias $alias" $alias_file | wc -l`
+  if [[ count -eq 0 ]]; then
+    echo "No alias named '$alias' found in $alias_file"
+    return
+  fi
+
+  sed -i.bak "/^alias $alias/d" $alias_file
+  rm "$alias_file.bak"
+
+  unalias $alias
+  echo "Removed alias '$alias'"
+}
+
+function main() {
+  if [ "$#" -eq 0 ]; then
+    print_help
+    return
+  fi
+
+  operation=""
+  alias=""
+  command=""
+
+  arg_pos=1
+  for i in "$@"; do
+    if [[ $arg_pos -eq 1 ]]; then
+      operation=$i
+    fi
+    if [[ $arg_pos -eq 2 ]]; then
+      alias=$i
+    fi
+    if [[ $arg_pos -eq 3 ]]; then
+      command=$i
+    fi
+    ((arg_pos=arg_pos+1))
+  done
+
+  case "$operation" in
+    "ls")
+      list_aliases
+      ;;
+    "add")
+      if [[ "$#" -ne 3 || $alias =~ " " ]]; then
+        print_add_usage
+        return
+      fi
+      add_alias $alias $command
+      ;;
+    "rm")
+      if [[ "$#" -ne 2 || $alias =~ " " ]]; then
+        print_remove_usage
+        return
+      fi
+      remove_alias $alias
+      ;;
+    "help")
+      print_help
+      ;;
+    *)
+      print_help
+      ;;
+  esac
+}
+
+main "$@"
