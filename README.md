@@ -3,24 +3,21 @@
 A Shell CLI tool to conveniently manage aliases for bash and zsh.
 
 ## Installation
-Clone the repository to your folder of choice:
+Clone the repository, then copy the script to a folder of your choice:
 
-    $ git clone https://github.com/bhayatus/aliaser.git .
+    $ git clone https://github.com/bhayatus/aliaser.git
+    $ cd aliaser
+    $ cp aliaser /usr/local/scripts
 
-Create a file that will contain your aliases if you aren't using one already:
+Create a file that will contain your aliases (if you aren't using one already):
 
     $ touch ~/.aliases
 
-If you choose a different name for your aliases file, modify the following in the aliaser script:
-
-    # Change ~/.aliases to your own file name
-    alias_file=$(realpath ~/.aliases)
-
-Add the following to one of .bashrc, .zshrc, or another startup script:
-
-    alias aliaser="source <path to aliaser script>"
-    # Change aliases file name here if necessary
-    source ~/.aliases
+Add the following to a startup script such as .bashrc or .zshrc (modifying where necessary):
+    
+    alias aliaser="source /usr/local/scripts/aliaser"
+    export ALIASES_FILE=~/.aliases
+    source $ALIASES_FILE
 
 Ensure that you source your newly modified startup script like so:
 
@@ -31,7 +28,7 @@ Running `aliaser help` displays the following:
     
     CLI tool to manage aliases for bash and zsh
 
-    usage: aliaser <operation> [alias] [command]
+    usage: aliaser <operation>
 
     operations:
         ls

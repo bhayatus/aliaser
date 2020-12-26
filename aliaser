@@ -1,4 +1,4 @@
-alias_file=$(realpath ~/.aliases)
+#!/bin/sh
 
 function print_add_usage() {
   echo "usage: aliaser add <alias> <command>"
@@ -14,7 +14,7 @@ function print_remove_usage() {
 function print_help() {
   echo "CLI tool to manage aliases for bash and zsh"
   echo
-  echo "usage: aliaser <operation> [alias] [command]"
+  echo "usage: aliaser <operation>"
   echo
   echo "operations:"
   echo "      ls"
@@ -37,7 +37,7 @@ function print_help() {
 
 function list_aliases() {
   count=`cat $alias_file | wc -l`
-  if [[ count -eq 0 ]] ; then
+  if [[ count -eq 0 ]]; then
     echo "No aliases found in $alias_file"
   else
     cat $alias_file | while read alias_line;
@@ -84,6 +84,13 @@ function main() {
   if [ "$#" -eq 0 ]; then
     print_help
     return
+  fi
+
+  if [[ -z "${ALIASES_FILE}" ]]; then
+    echo "ALIASES_FILE environment variable must be set"
+    return
+  else
+    alias_file=$(realpath ${ALIASES_FILE})
   fi
 
   operation=""
