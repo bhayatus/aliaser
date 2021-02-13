@@ -22,7 +22,7 @@ function print_help() {
   echo 
   echo "      add <alias> <command>"
   echo "            Creates/replaces an alias for the specified command in the aliases file"
-  echo "            The alias name must not contain any spaces"
+  echo "            The alias name must not contain any spaces, and can only consist of alphanumeric characters"
   echo "            If command contains spaces, it must be wrapped in quotes"
   echo
   echo "      rm <alias>"
@@ -48,14 +48,19 @@ function list_aliases() {
 }
 
 function add_alias() {
-  count=`grep -o "^alias $alias" $alias_file | wc -l`
+
+  if [[ "$alias" =~ [^0-9A-Za-z]+ ]]; then
+    echo "Alias name can only contain alphanumeric characters"
+    return
+  fi
+  count=`grep -o "^alias $alias=" $alias_file | wc -l`
   if [[ count -eq 1 ]]; then
     echo "Alias '$alias' already exists, replace? (y to continue)"
     read response
     if [[ "$response" -ne "y" ]]; then
       return
     else
-      sed -i.bak "s/^alias $alias.*$/alias $alias='$command'/g" $alias_file
+      sed -i.bak "s/^alias $alias=.*$/alias $alias='$command'/g" $alias_file
       rm "$alias_file.bak"
     fi
   else
@@ -63,17 +68,17 @@ function add_alias() {
   fi
 
   source $alias_file
-  echo "Added alias '$alias'"
+  echo "Added alias '$alias' for command '$command'"
 }
 
 function remove_alias() {
-  count=`grep -o "^alias $alias" $alias_file | wc -l`
+  count=`grep -o "^alias $alias=" $alias_file | wc -l`
   if [[ count -eq 0 ]]; then
     echo "No alias named '$alias' found in $alias_file"
     return
   fi
 
-  sed -i.bak "/^alias $alias/d" $alias_file
+  sed -i.bak "/^alias $alias=/d" $alias_file
   rm "$alias_file.bak"
 
   unalias $alias
