@@ -32,7 +32,7 @@ Running `aliaser help` displays the following:
 
     operations:
         ls
-                Lists all aliases saved in the aliases file
+                Lists all aliases saved in the aliases file, in alphabetical order
 
         add <alias> <command>
                 Creates/replaces an alias for the specified command in the aliases file

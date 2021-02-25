@@ -18,7 +18,7 @@ function print_help() {
   echo
   echo "operations:"
   echo "      ls"
-  echo "            Lists all aliases saved in the aliases file"
+  echo "            Lists all aliases saved in the aliases file, in alphabetical order"
   echo 
   echo "      add <alias> <command>"
   echo "            Creates/replaces an alias for the specified command in the aliases file"
@@ -40,10 +40,7 @@ function list_aliases() {
   if [[ count -eq 0 ]]; then
     echo "No aliases found in $alias_file"
   else
-    cat $alias_file | while read alias_line;
-    do
-      echo "$alias_line"
-    done
+    sort $alias_file
   fi
 }
 
