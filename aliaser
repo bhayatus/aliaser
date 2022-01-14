@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="1.3.0"
+version="1.3.1"
 
 function print_version {
   echo $version
@@ -96,7 +96,7 @@ function main {
     echo "ALIASES_FILE environment variable must be set"
     exit 1
   else
-    alias_file=$(realpath ${ALIASES_FILE})
+    alias_file=${ALIASES_FILE}
   fi
 
   operation=""
