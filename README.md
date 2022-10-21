@@ -1,23 +1,24 @@
 # aliaser
 
-A Shell CLI tool to conveniently manage aliases for bash and zsh.
+A `Shell` CLI tool to conveniently manage aliases for `bash` and `zsh`.
 
 ## Installation
 
-If you are using a Debian-based Linux distribution such as Ubuntu, download the latest `.deb` file from the `Releases` section, and run the following:
+If you are using a `Debian` flavor of `Linux` such as `Ubuntu`, download the latest `.deb` file from the `Releases` section, and run the following:
 
     $ sudo dpkg -i aliaser_*.deb
 
 Alternatively, you can do the following:
 
     $ git clone https://github.com/bhayatus/aliaser.git
+    # Move the script to a location within your PATH.
     $ sudo cp aliaser/aliaser /usr/local/bin
 
 Next, create a file that will contain your aliases (if you aren't using one already):
 
     $ touch ~/.aliases
 
-Add the following to a startup script such as `.bashrc` (or `.zshrc` if you prefer):
+Add the following to a startup script such as `.bashrc` (or `.zshrc` if you are on `macOS`):
     
     export ALIASES_FILE=~/.aliases
     source $ALIASES_FILE
@@ -34,7 +35,7 @@ Add the following to a startup script such as `.bashrc` (or `.zshrc` if you pref
       fi
     }
 
-Ensure that you source your newly modified startup script like so:
+Ensure that you source the updated `.bashrc` (or `.zshrc` if you went that route):
 
     $ source ~/.bashrc
 
@@ -58,14 +59,14 @@ Running `aliaser help` displays the following:
               The alias name must not contain any spaces
 
         help
-              Prints the help display
+              Shows the help display
 
         version
-              Prints the current version
+              Shows the current version
 
     Visit https://github.com/bhayatus/aliaser for details on setup
 
 Note that this tool only manages aliases stored within the aliases file, any declared outside will not be affected.
 
 ## Demo
-![Demo](demo/demo.gif)
+![Demo](demo.gif)
