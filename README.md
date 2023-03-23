@@ -53,10 +53,17 @@ Running `aliaser help` displays the following:
 
         add <alias_name> <command>
               Creates/replaces an alias for the specified command in the aliases file
+
               The alias name must not contain any spaces, and can only consist of alphanumeric characters
+
+              In the event that you need to add an alias for a more complex command or an alias that contains several,
+              you can wrap with double quotes, i.e. $ aliaser add print_temp "cd temp && ls"
+
+              If you need to escape a character in the command, use a preceding \
 
         rm <alias_name>
               Removes the alias permanently from the aliases file
+
               The alias name must not contain any spaces
 
         help

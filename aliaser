@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="1.3.2"
+version="1.3.3"
 
 function print_version {
   echo $version
@@ -27,10 +27,17 @@ function print_help {
   echo 
   echo "      add <alias_name> <command>"
   echo "            Creates/replaces an alias for the specified command in the aliases file"
+  echo
   echo "            The alias name must not contain any spaces, and can only consist of the following characters: a-z A-Z 0-9 _ -"
+  echo
+  echo "            In the event that you need to add an alias for a more complex command or an alias that contains several,"
+  echo "            you can wrap with double quotes, i.e. \$ aliaser add print_temp \"cd temp && ls\""
+  echo
+  echo "            If you need to escape a character in the command, use a preceding \\"
   echo
   echo "      rm <alias_name>"
   echo "            Removes the alias permanently from the aliases file"
+  echo
   echo "            The alias name must not contain any spaces"
   echo
   echo "      help"
@@ -63,14 +70,16 @@ function add_alias {
     if [[ $response != "y" ]]; then
       exit
     else
-      sed -i.bak "s/^alias $alias=.*$/alias $alias='$command'/g" $alias_file
-      rm "$alias_file.bak"
+      sed -i.bak "s|^alias $alias=.*$|alias $alias='$command'|g" $alias_file
+      if [[ -f "$alias_file.bak" ]]; then
+        rm "$alias_file.bak"
+      fi
+        echo "Replaced alias '$alias'"
     fi
   else
     echo "alias $alias='$command'" >> $alias_file
+    echo "Added alias '$alias'"
   fi
-
-  echo "Added alias '$alias' for command '$command'"
 }
 
 function remove_alias {
@@ -81,7 +90,9 @@ function remove_alias {
   fi
 
   sed -i.bak "/^alias $alias=/d" $alias_file
-  rm "$alias_file.bak"
+  if [[ -f "$alias_file.bak" ]]; then
+    rm "$alias_file.bak"
+  fi
 
   echo "Removed alias '$alias'"
 }
